@@ -38,10 +38,13 @@ procedure AQMain is
 				terminate;
 			end select;
 
-			Put_Line(
-				Item => "The area under sin(x^2) for x = "
-				& Float'Image(StartPoint) & " to " & Float'Image(EndPoint)
-				& " is " & Float'Image(Result));
+			Put("The area under sin(x^2) for x = ");
+			FTIO.Put(StartPoint);
+			Put(" to ");
+			FTIO.Put(EndPoint);
+			Put(" is ");
+			FTIO.Put(Result);
+			New_Line;
 		end loop;
 	end PrintResult;
 
