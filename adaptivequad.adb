@@ -14,34 +14,46 @@ package body AdaptiveQuad is
 		C: Float := (A + B) / 2.0;
 		Left: Float;
 		Right: Float;
-		task AQuadTaskLeft is entry Start;
+		task AQuadTaskLeft is entry Start; entry Get(LeftIn: out Float);
 		end AQuadTaskLeft;
 
 		task body AQuadTaskLeft is
 		begin
-			select
-				accept Start do
-					null;
-				end Start;
-				Left:= RecAQuad(A, C, Eps / 2.0, Left);
-			or
-				terminate;
-			end select;
+			for I in 1 .. 2 loop
+				select
+					accept Start do
+						null;
+					end Start;
+					Left:= RecAQuad(A, C, Eps / 2.0, Left);
+				or
+					accept Get(LeftIn: out Float) do
+						LeftIn := Left;
+					end Get;
+				or
+					terminate;
+				end select;
+			end loop;
 		end AQuadTaskLeft;
 
-		task AQuadTaskRight is entry Start;
+		task AQuadTaskRight is entry Start; entry Get(RightIn: out Float);
 		end AQuadTaskRight;
 
 		task body AQuadTaskRight is
 		begin
-			select
-				accept Start do
-					null;
-				end Start;
-				Right:= RecAQuad(C, B, Eps / 2.0, Right);
-			or
-				terminate;
-			end select;
+			for I in 1 .. 2 loop
+				select
+					accept Start do
+						null;
+					end Start;
+					Right:= RecAQuad(C, B, Eps / 2.0, Right);
+				or
+					accept Get(RightIn: out Float) do
+						RightIn := Right;
+					end Get;
+				or
+					terminate;
+				end select;
+			end loop;
 		end AQuadTaskRight;
 
 
@@ -54,6 +66,9 @@ package body AdaptiveQuad is
 		else
 			AQuadTaskLeft.Start;
 			AQuadTaskRight.Start;
+
+			AQuadTaskLeft.Get(Left);
+			AQuadTaskRight.Get(Right);
 			return Left + Right;
 		end if;
 	end RecAQuad;
