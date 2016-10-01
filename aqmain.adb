@@ -19,7 +19,7 @@ procedure AQMain is
 	package SinSquareAdaptiveQuad is new AdaptiveQuad(MyF);
 
 	task type PrintResult is
-		entry Receive(A: in Float; B: in Float; Res: in Float);
+		entry Receive(A, B, Res: in Float);
 	end PrintResult;
 
 	task body PrintResult is
@@ -29,7 +29,7 @@ procedure AQMain is
 	begin
 		loop
 			select
-				accept Receive(A: in Float; B: in Float; Res: in Float) do
+				accept Receive(A, B, Res: in Float) do
 					StartPoint:= A;
 					EndPoint:= B;
 					Result:= Res;
@@ -49,7 +49,7 @@ procedure AQMain is
 	end PrintResult;
 
 	task type ComputeArea is
-		entry Receive(A: in Float; B: in Float);
+		entry Receive(A, B: in Float);
 	end ComputeArea;
 
 	task body ComputeArea is
@@ -60,7 +60,7 @@ procedure AQMain is
 	begin
 		loop
 			select
-				accept Receive(A: in Float; B: in Float) do
+				accept Receive(A, B: in Float) do
 					StartPoint:= A;
 					EndPoint:= B;
 				end Receive;
