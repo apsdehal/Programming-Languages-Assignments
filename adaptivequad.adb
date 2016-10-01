@@ -2,7 +2,7 @@ with Text_IO;
 use Text_IO;
 
 package body AdaptiveQuad is
-	function SimpsonsRule(A, B: Float) return Float is
+	function SimpsonsRule(A, B: in Float) return Float is
 		C: Float := (A + B) / 2.0;
 		H3: Float := (abs (B - A)) / 6.0;
 	begin
@@ -10,7 +10,7 @@ package body AdaptiveQuad is
 	end SimpsonsRule;
 
 
-	function RecAQuad(A, B, Eps, Whole: Float) return Float is
+	function RecAQuad(A, B, Eps, Whole: in Float) return Float is
 		C: Float := (A + B) / 2.0;
 		Left: Float;
 		Right: Float;
@@ -68,7 +68,7 @@ package body AdaptiveQuad is
 		end if;
 	end RecAQuad;
 
-	function AQuad(A, B, Eps: Float) return Float is
+	function AQuad(A, B, Eps: in Float) return Float is
 	begin
 		return RecAQuad(A, B, Eps, SimpsonsRule(A, B));
 	end AQuad;
