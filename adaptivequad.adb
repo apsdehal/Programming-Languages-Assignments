@@ -14,49 +14,44 @@ package body AdaptiveQuad is
 		C: Float := (A + B) / 2.0;
 		Left: Float;
 		Right: Float;
-		task AQuadTaskLeft is entry Start; entry Get(LeftIn: out Float);
-		end AQuadTaskLeft;
+		task type AQuadTask is
+			entry Start(A, B, Eps, Whole: in Float);
+			entry Get(ResultIn: out Float);
+		end AQuadTask;
 
-		task body AQuadTaskLeft is
+		task body AQuadTask is
+			StartP: Float;
+			EndP: Float;
+			Epsilon: Float;
+			Full: Float;
+			Result: Float;
 		begin
-			for I in 1 .. 2 loop
-				select
-					accept Start do
-						null;
-					end Start;
-					Left:= RecAQuad(A, C, Eps / 2.0, Left);
-				or
-					accept Get(LeftIn: out Float) do
-						LeftIn := Left;
-					end Get;
-				or
-					terminate;
-				end select;
-			end loop;
-		end AQuadTaskLeft;
+			select
+				accept Start(A, B, Eps, Whole: in Float) do
+					StartP:= A;
+					EndP:= B;
+					Epsilon:= Eps;
+					Full:= Whole;
+				end Start;
+			or
+				terminate;
+			end select;
 
-		task AQuadTaskRight is entry Start; entry Get(RightIn: out Float);
-		end AQuadTaskRight;
+			Result:= RecAQuad(StartP, EndP, Epsilon, Full);
 
-		task body AQuadTaskRight is
-		begin
-			for I in 1 .. 2 loop
-				select
-					accept Start do
-						null;
-					end Start;
-					Right:= RecAQuad(C, B, Eps / 2.0, Right);
-				or
-					accept Get(RightIn: out Float) do
-						RightIn := Right;
-					end Get;
-				or
-					terminate;
-				end select;
-			end loop;
-		end AQuadTaskRight;
+			select
+				accept Get(ResultIn: out Float) do
+					ResultIn:= Result;
+				end Get;
+			or
+				terminate;
+			end select;
+		end AQuadTask;
 
-
+		TLeft: AQuadTask;
+		TRight: AQuadTask;
+		LeftResult: Float;
+		RightResult: Float;
 	begin
 		Left:= SimpsonsRule(A, C);
 		Right:= SimpsonsRule(C, B);
@@ -64,12 +59,12 @@ package body AdaptiveQuad is
 		if (abs (Left + Right - Whole)) <= (15.0 * eps) then
 			return Left + Right + ((Left + Right - Whole) / 15.0);
 		else
-			AQuadTaskLeft.Start;
-			AQuadTaskRight.Start;
+			TLeft.Start(A, C, Eps / 2.0, Left);
+			TRight.Start(C, B, Eps / 2.0, Right);
 
-			AQuadTaskLeft.Get(Left);
-			AQuadTaskRight.Get(Right);
-			return Left + Right;
+			TLeft.Get(LeftResult);
+			TRight.Get(RightResult);
+			return LeftResult + RightResult;
 		end if;
 	end RecAQuad;
 
