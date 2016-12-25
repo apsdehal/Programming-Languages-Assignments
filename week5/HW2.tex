@@ -1,0 +1,357 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=0.75in,footskip=0.25in]{geometry}
+\usepackage{enumitem}
+
+\usepackage{listings}
+\usepackage{color}
+
+
+\usepackage[all,cmtip]{xy}
+
+
+\definecolor{name}{rgb}{0.5,0.5,0.5}
+\lstset{key1=value1,key2=value2} % Define listings style
+
+\definecolor{javared}{rgb}{0.6,0,0} % for strings
+\definecolor{javagreen}{rgb}{0.25,0.5,0.35} % comments
+\definecolor{javapurple}{rgb}{0.5,0,0.35} % keywords
+\definecolor{javadocblue}{rgb}{0.25,0.35,0.75} % javadoc
+\definecolor{bgcolor}{rgb}{0.75,0.75,0.75}
+
+ 
+\lstset{
+basicstyle=\ttfamily,
+keywordstyle=\color{javapurple}\bfseries,
+stringstyle=\color{javared},
+commentstyle=\color{javagreen},
+morecomment=[s][\color{javadocblue}]{/**}{*/},
+numbers=left,
+numberstyle=\tiny\color{black},
+backgroundstyle=\color{bgcolor},
+stepnumber=2,
+numbersep=10pt,
+tabsize=4,
+showspaces=false,
+showstringspaces=false} 
+
+\setlength{\parskip}{\baselineskip}%
+
+\begin{document}
+
+\begin{center}
+{\huge Amanpreet Singh
+ 
+as10656@nyu.edu
+
+N18196113}
+
+\end{center}
+
+
+\section*{Exercise 1}
+
+\begin{enumerate}[label=(\alph*)]
+
+\item $Y(\lambda fac.\lambda n.(* n \ (fac \ (- n \ 1))$
+
+\item Y = $(\lambda h. (\lambda x. \ h(x \ x))(\lambda x. \ h(x \ x))) $ \\
+Derivation needs Yf = f(Yf) \\
+Yf = $(\lambda h. (\lambda x. \ h(x \ x))(\lambda x. \ h(x \ x)))$f \\~\\
+Applying beta reduction \\$(\lambda x. \ f(x \ x))(\lambda x. \ f(x \ x)) $  \\~\\
+Applying beta reduction again  \\f$(\lambda x. \ f(x \ x))(\lambda x. \ f(x \ x)) $ \\~\\
+which is f(Yf)
+
+\item Applicative order: choose the leftmost innermost redex to reduce, so that all the arguments are evaluated when the procedure is applied
+
+Normal order: choose the leftmost outermost redex to reduce, so that whenever possible arguments are substituted into the body of an abstraction before arguments are reduced
+\item Example: $(\lambda x.(+\ x\ x))(\lambda y.(* \ 2 \ y) \ 3)$
+
+Applicative order: $(\lambda x.(+ x \ x))(* \ 2 \ 3)$
+
+Normal Order: $(+\ (\lambda y. (* \ 2 \ y) \  3) \ (\lambda y. (* \ 2 \ y)\ 3))$
+
+\item Church Rosser theorem 1: No expression can be be reduced to two distinct normal forms i.e. all terminating reduction sequences produce the same result.
+
+Church Rosser theorem 2: If E1 reduces to E2, and E2 is a normal form and if there is any reduction from E1 to E2 then there is a normal order reduction which reduces E1 to normal form.
+
+\end{enumerate}
+
+\newpage
+
+\section*{Exercise 2}
+
+\begin{enumerate}[label=(\alph*)]
+
+\item 
+\begin{verbatim}
+fun f g h [] = []
+ | f g h (x::xs) = (g x, h x)::f g h xs;
+\end{verbatim}
+
+\item ('a $\rightarrow$ 'b) $\ast$ ('c $\rightarrow$ 'b) $\rightarrow$ 'a $\rightarrow$ 'c list $\rightarrow$ 'b list
+
+\item As taught in class, we will first put up four placeholders
+
+( ) $\rightarrow$ ( ) $\rightarrow$ ( )  $\rightarrow$ ( )
+
+As there are three parameters in total and one output
+
+So clearly a and b are function and output is a list. Also since members of list are same type, [a x, b y] suggest that the output of both the function are of same type. In whole of the function x is just getting passed in a and has no other interaction, this means that input type of a and x's type are same but there an alpha because we can't infer their actual type from any list. Let's say that output of a is b' and we know result is a list of output of a and b which of same type. So input one is tuple of two function so in total there would be now 5 brackets. Let's fill it up with the information we know till now.
+
+('a $\rightarrow$ 'b) $\ast$ ( \_ $\rightarrow$ 'b) $\rightarrow$ 'a $\rightarrow$ ( ) $\rightarrow$ 'b list
+
+Now we know that third parameters is a list (seeing the cons destructuring) and it is parameter to function b and it has no relation with a' and b' so it is unique type c' So now we can fill up the type of the whole function using the information above
+
+
+('a $\rightarrow$ 'b) $\ast$ ('c $\rightarrow$ 'b) $\rightarrow$ 'a $\rightarrow$ 'c list $\rightarrow$ 'b list
+
+\newpage 
+
+\end{enumerate}
+\section*{Exercise 3}
+\begin{enumerate}[label=(\alph*)]
+\item $\textbf{Dynamic Dispatch:}$ When a method for an object is called, which method it is depends on actual type of the object, not the declared type.
+
+Example in Java:
+\begin{lstlisting}[language=Java]
+class Vehicle {
+	int speed;
+	public void setSpeed(int x) {
+		speed = x;
+	}
+}
+
+class Car extends Vehicle {
+	@Override
+	public void setSpeed(int x) {
+		System.out.println("Car's speed method");
+		speed = x	
+	}
+}
+
+public class Example {
+	public static void main(Strings args[]) {
+		Vehicle V = new Car();
+		v.setSpeed(20) 
+		// Calls car's set speed method and logs the info	
+	}
+}
+\end{lstlisting}
+
+\item Let's explain this by an example, say there are two classes $\textbf{A}$ and $\textbf{B}$
+
+\begin{lstlisting}[language=Java]
+class A {
+	int x;
+	int y;
+}
+
+class B extends A {
+	int z;
+}
+\end{lstlisting}
+
+So class A contains two members that are x and y, and class B contains three members x, y and z. Class A is set of all the classes containing x and y, but class B is specific set of those classes which also contain z. So set of class B is smaller than class A and is a subset of it.
+
+\item
+\[
+\xymatrix{
+  & B \rightarrow A \ar[dl] \ar[dr] \\
+  A \rightarrow A\ar[rd] && B \rightarrow B \ar[dl]\\
+  & A \rightarrow B
+}\hspace{6em}% adjust to suit
+\]
+
+\item 
+
+\begin{lstlisting}[language=Scala]
+class A {
+  val x: Int = 1
+  def getX: Int = x
+}
+
+class B extends A {
+  val z: Int = 2
+  def getZ: Int = z
+}
+
+object homework {
+
+  def a2Int(g: A => Int) = {
+    val a:A = new A
+    g(a)
+  }
+
+  def b2Int(g: B => Int) = {
+    val b:B = new B
+    g(b)
+  }
+
+  def h(x: A) = x.getX
+
+  def i(b: B) = b.getZ
+
+  def main(args: Array[String]) = {
+    println(a2Int(h)) // Works fine
+    println(a2Int(i))
+    // This will throw error as in i the object a
+    // that is passed will try to access getZ
+    // which is not defined for A but is for B
+    println(b2Int(i)) // Works fine
+    println(b2Int(h)) // Work fine
+  }
+}
+\end{lstlisting}
+
+\end{enumerate}
+
+\newpage
+
+\section*{Exercise 4}
+
+\begin{enumerate}[label=(\alph*)]
+\item 
+
+\begin{lstlisting}[language=Java]
+import java.util.*;
+import java.util.*;
+class C<T> extends ArrayList<T>{}
+
+class A {}
+
+class B extends A {
+  public int x;
+}
+
+class Homework {
+  // So if subtyping was to work C<B> should be C<A>
+  public static void subtypeTester(C<A> ca) {
+    // So it was perfectly fine to do
+    // because a C is an A
+    ca.add(new A());
+
+  }
+
+  public static void main(String[] args) {
+    C<B> cb = new C<B>();
+
+    subtypeTester(cb);
+    // Since list was originally B's so we should
+    // get a B back
+    B b = cb.get(0); // But actually returns a D
+
+    System.out.println(b.x); // Oops, not found
+
+    // Point is every list of B is list of A but every list of A
+    // is not list of B
+  }
+}
+
+\end{lstlisting}
+
+\item The required part in the subTypeTester function is changed
+\begin{lstlisting}[language=Java]
+class Homework {
+  // So if subtyping was to work C<B> should be C<A>
+  // Now allows all the subtypes of A
+  public static void subtypeTester(C<? extends A> ca) {
+    // So it was perfectly fine to do
+    // because a C is an A
+    ca.add(new A());
+
+  }
+
+  public static void main(String[] args) {
+    C<B> cb = new C<B>();
+
+    subtypeTester(cb);
+    // Since list was originally B's so we should
+    // get a B back
+    B b = cb.get(0); // But actually returns a D
+
+    System.out.println(b.x); // Oops, not found
+
+    // Point is every list of B is list of A but every list of A
+    // is not list of B
+  }
+}
+
+\end{lstlisting}
+\end{enumerate}
+
+\section*{Exercise 5}
+
+\begin{enumerate}[label=(\alph*)]
+
+\item For covariant subtyping: Let C be a generic class, then C[S] is subtype of C[T] if S is subtype of T
+
+\item For contravariant subtyping: Let C be a generic class, then C[S] is subtype of C[T] if S is supertype of T 
+
+\item 
+\begin{lstlisting}[language=Scala]
+abstract class myList[+T]
+
+case object nil extends myList[Nothing]
+
+case class cons[T](a: T, l: myList[T]) extends myList[T]
+
+object Homework {
+  def map[T](f: T => T, l: myList[T]): myList[T] = {
+
+    l match {
+      case cons(value, valueList) => {
+        cons(f(value), map(f, valueList))
+      }
+
+      case nil => {
+        nil
+      }
+    }
+  }
+
+  def main(args: Array[String]) = {
+    val l = cons(1, cons(2, cons(4, nil)))
+    println(l)
+    // outputs: cons(1,cons(2,cons(4,nil)))
+
+    def myF[T] = (x: T) => x.toString() + "-modified"
+    val c = map(myF, l)
+    println(c)
+    // outputs: cons(1-modified,cons(2-modified,cons(4-modified,nil)))
+
+    val d = map((x: Int) => x + 1, l)
+    println(d)
+    // outputs: cons(2,cons(3,cons(5,nil)))
+  }
+}
+\end{lstlisting}
+\end{enumerate}
+
+\section*{Exercise 6}
+
+\begin{enumerate}[label=(\alph*)]
+\item Storage reclaimation in reference counting is incremental and happens a little bit at a time. So the program will not be interuppted for a long time (unless there are cycles) in reference counting where as in mark sweep program stops execution to do the garbage collection which is propotional to size of heap.
+
+\item Unlike mark sweep, whose cost is propotional to size of heap and doesn't depend on live pointers, the cost of copying collector is propotional to amount of live storage and not the size of heap.
+
+\item Observation of generational copying grabage collection is that older an object gets, the longer it can be expected to live. As many objects, representing the temporary or intermediate values, live for only a short time. The objects which live longer tend to corrospond to the important objects (globals, central data structures)
+
+Instead of two heaps, there are only many heaps. Each heap contains objects of same age. These heaps are called generations. There are younger, middle and older generations.
+
+The younger generations are garbage collected much more frequently than the old generations, since a higher percentage of objects won't be live in younger generations. Cost is reduced as only a fraction of live objects which are expected to live for short time are garbage collected. Objects in one generation that are traversed during garbage collection are copied into next generation. If the older gen fills up, it is garbage collected as well.Roots are the globals and other stuff that point to objects of youngest generations. Each generation contains incoming references so as to make sure that some important pointer isn't deleted in younger generation which is pointed to by older generation (possible by an assignment).
+
+\item 
+\begin{verbatim}
+def destroy(p):
+   p.refcount = p.refcount - 1
+   if p.refcount == 0:
+   	  foreach pointer field x in p:
+   	  	destroy(x)
+   
+   addToFreeList(p)
+\end{verbatim}
+
+\end{enumerate}
+
+\end{document}
